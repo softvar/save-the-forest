@@ -63,7 +63,7 @@ function Game() {
 	weather = new Weather();
 }
 
-var building, time;
+var tree, time;
 Game.prototype = {
 	restart: function () {
 		//background = new Background();
@@ -117,7 +117,7 @@ Game.prototype = {
 				G.buildings[i].flame && G.buildings[i].flame.update(G.buildings[i].x, G.buildings[i].y, G.buildings[i].width);
 
 				if (G.buildings[i].x < 0 - G.buildings[i].width) {
-					G.buildings[i] = new Building();
+					G.buildings[i] = new Tree();
 				}
 			}
 			player.update();
@@ -129,9 +129,9 @@ Game.prototype = {
 		flameBack.update();
 	},
 	addInitialBuildings: function () {
-		G.buildings.push(new Building({isNoFlame: true}))
+		G.buildings.push(new Tree({isNoFlame: true}))
 		for (var i = 0; i < 20; i++) {
-			G.buildings.push(new Building())
+			G.buildings.push(new Tree())
 		}
 	},
 	resize: function() {

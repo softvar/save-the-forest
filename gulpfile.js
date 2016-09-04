@@ -25,7 +25,7 @@ var paths = {
     'src/particles.js',
     'src/background.js',
     'src/player.js',
-    'src/building.js',
+    'src/tree.js',
     'src/game.js',
     'src/main.js'
   ],
