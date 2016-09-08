@@ -4,7 +4,10 @@ function Game() {
 	G.isInProgress = true;
 	G.backgroundColor = '#fff';
 
+	G.karma = 0;
+
 	G.highscore = utils.getLocalStorageData() || 0;
+	console.log(G.highscore)
 	G.isSound = utils.getLocalStorageData() || 1;
 
 	G.resolution = 1;
@@ -86,7 +89,11 @@ Game.prototype = {
 		_.cancelAnimationFrame(G.raf);
    		G.raf = undefined;
    		G.isInProgress = false;
-   		console.log('Boom! DIE!')
+   		console.log('Boom! DIE!');
+   		// update high score
+   		if (G.karma > G.highscore) {
+   			utils.setLocalStorageData(G.karma)
+   		}
    		SU.play('gameOver');
 	},
 	cycle: function () {
@@ -109,28 +116,19 @@ Game.prototype = {
 
 			for (var i = 0; i < G.buildings.length; i++) {
 				G.buildings[i].x -= G.speed;
-				G.buildings[i].update(G.buildings[i].x, G.buildings[i].y, G.buildings[i].width, G.buildings[i].height);
-
-				// G.buildings[i].drawFractalTree(G.buildings[i].x, G.buildings[i].y, G.buildings[i].width, G.buildings[i].height)
-
-				//G.buildings[i].flame.size = G.buildings[i].width / 2;
-				G.buildings[i].flame && G.buildings[i].flame.update(G.buildings[i].x, G.buildings[i].y, G.buildings[i].width);
+				G.buildings[i].update(G.buildings[i]);
 
 				if (G.buildings[i].x < 0 - G.buildings[i].width) {
 					G.buildings[i] = new Tree();
 				}
 			}
 			player.update();
-
-			if (G.buildings.length === 10) {
-				// G.buildings.splice(0, 5);
-			}
 		}
 		flameBack.update();
 	},
 	addInitialBuildings: function () {
 		G.buildings.push(new Tree({isNoFlame: true}))
-		for (var i = 0; i < 20; i++) {
+		for (var i = 0; i < 5; i++) {
 			G.buildings.push(new Tree())
 		}
 	},
@@ -217,16 +215,16 @@ Game.prototype = {
 	},
 	keyDown: function(e) {
 		// 32 is space
-		if (e.keyCode === 32 && !G.isInProgress) {
+		/*if (e.keyCode === 32 && !G.isInProgress) {
 			G.restart();
 			return;
-		}
+		}*/
 		if (!G.isInProgress) {
 			return;
 		}
 
 		// 39 is right, 40 is down, 38 is up
-		if (e.keyCode === 39 || e.keyCode === 38) {
+		if (e.keyCode === 39 || e.keyCode === 38 || e.keyCode === 32) {
 			player.keyDown(e.keyCode);
 		}
 	},
