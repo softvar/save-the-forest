@@ -77,7 +77,7 @@ var P = {
 	w: 640,
 	h: 760,
 	g: 800,
-	fireOffset: 60,
+	fireOffset: 70,
     spikesOffset: 50,
     tbOffset: 20
 };

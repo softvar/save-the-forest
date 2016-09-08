@@ -62,3 +62,79 @@ Cloud.prototype = {
 		st();
 	}
 }
+
+function SunMoon() {
+	SM = this;
+	this.isSun = true; // will act as moon too
+	this.r = 20;
+	this.x = 0;
+	this.y = 100;
+	this.speed = 1;
+	G.period = 'morning';
+	this.update();
+}
+SunMoon.prototype = {
+	getColor: function () {
+		var color;
+		switch (G.period) {
+			case 'morning':
+				color = this.isSun ? '#ffff9e' : '#fff';
+				break;
+			case 'afternoon':
+				color = this.isSun ? 'orange' : '#fff';
+				break;
+			case 'evening':
+				color = this.isSun ? 'red' : '#fff';
+				break;
+			case 'night':
+				color = this.isSun ? '#fff' : '#fff';
+				break;
+		}
+		return color;
+	},
+	resetPos: function () {
+		this.x = 0;
+		this.y = 100;
+		G.period = 'morning';
+		thisWeather.step = 0;
+		currentTime = new Date();
+	},
+	update: function () {
+		// lets assume 30 secs is 1 day, so 15-15 secs day-night
+		if (Weather.dt / 1000 > 5 * diffInWeatherTime ||
+			Weather.dt / 1000 > 4 * diffInWeatherTime ||
+			Weather.dt / 1000 > 3 * diffInWeatherTime
+		) {
+			G.period = 'night';
+		} else if (Weather.dt / 1000 > 2 * diffInWeatherTime) {
+			G.period = 'evening';
+		} else if (Weather.dt / 1000 > 1 * diffInWeatherTime) {
+			G.period = 'afternoon';
+		} else {
+			G.period = 'morning';
+		}
+
+		this.x += ((G.can.width / (2 * diffInWeatherTime)) / fps); // this.speed;
+		if (this.x > G.can.width) {
+			this.resetPos();
+			this.isSun = !this.isSun;
+			return;
+		}
+
+		this.y -= 0.1;
+		sv();
+		ctx.shadowColor   = this.getColor();
+        ctx.shadowOffsetX = -3;
+        ctx.shadowOffsetY = 3;
+        ctx.shadowBlur    = 10;
+		bp();
+		ar(this.x, this.y, this.r, 0, Math.PI * 2, true);
+		cp();
+		ctx.fillStyle = this.getColor();
+		fl();
+		rs();
+
+		thisWeather.updateGradient();
+		//G.backgroundColor = this.isSun ? this.getColor(true) : '#555';
+	}
+}
