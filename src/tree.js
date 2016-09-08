@@ -1,47 +1,48 @@
-var B, CC;
+var T, CC;
 var blw = 200, bw = 0;
 
 function Tree(config) {
-	B = this;
+	T = this;
 	config = config || {};
-	// B.lw = B.w = 0;
-	B.minW = 10;
-	B.maxW = 80;
-	B.minH = P.fireOffset;
-	B.maxH = 400;
-	B.minDist = 50;
-	B.maxDist = 200;
-	B.branchThickness = 3;
+	// T.lw = T.w = 0;
+	T.minW = 10;
+	T.maxW = 80;
+	T.minH = P.fireOffset;
+	T.maxH = 400;
+	T.minDist = 50;
+	T.maxDist = 200;
+	T.branchThickness = 3;
 
 	CC.w = utils.pI(CC.width);
 	CC.h = utils.pI(CC.height);
 
-	B.color = '#a77b44';
+	T.color = '#a77b44';
 	this.add();
 	if (!config.isNoFlame) {
-		B.flame = new Flame();
+		T.flame = new SmokyFlame();
+		T.flame.addEntity(Flame);
 	}
-	return B;
+	return T;
 }
 
 Tree.prototype = {
 	/*drawFractalTree: function (x, y, width, height) {
-		B.drawTree(x, y, width, height, -90, B.branchThickness);
+		T.drawTree(x, y, width, height, -90, T.branchThickness);
 	},
 	drawTree: function (x1, y1, width, height, angle, depth){
-		B.brLength = B.brLength || B.random(B.minW, B.maxW);
-		B.angle = B.angle || B.random(15, 20);
-		B.bb = (B.cos(angle) * depth * B.brLength);
-		B.vv = (B.sin(angle) * depth * B.brLength);
+		T.brLength = T.brLength || T.random(T.minW, T.maxW);
+		T.angle = T.angle || T.random(15, 20);
+		T.bb = (T.cos(angle) * depth * T.brLength);
+		T.vv = (T.sin(angle) * depth * T.brLength);
 		if (depth != 0){
-			var x2 = x1 + B.bb;
-			var y2 = y1 - B.vv;
+			var x2 = x1 + T.bb;
+			var y2 = y1 - T.vv;
 
-			B.drawLine(x1, y1, x2, y2, depth);
+			T.drawLine(x1, y1, x2, y2, depth);
 
-			B.drawTree(x2, y2, width, height, angle - B.angle, depth - 1);
-			B.drawTree(x2, y2, width, height, angle + B.angle, depth - 1);
-			// B.drawLine(x1, y1, x2, y2, depth);
+			T.drawTree(x2, y2, width, height, angle - T.angle, depth - 1);
+			T.drawTree(x2, y2, width, height, angle + T.angle, depth - 1);
+			// T.drawLine(x1, y1, x2, y2, depth);
 		}
 	},
 	random: function (min, max){
@@ -62,10 +63,10 @@ Tree.prototype = {
 
 	},
 	cos: function (angle) {
-		return M.cos(B.deg_to_rad(angle));
+		return M.cos(T.deg_to_rad(angle));
 	},
 	sin: function (angle) {
-		return M.sin(B.deg_to_rad(angle));
+		return M.sin(T.deg_to_rad(angle));
 	},
 	deg_to_rad: function (angle){
 		return angle*(M.PI/180.0);
@@ -74,28 +75,33 @@ Tree.prototype = {
 		if (val !== undefined) {
 			return val;
 		}
-		return utils.getRandomInt(B.minW, B.maxW);
+		return utils.getRandomInt(T.minW, T.maxW);
 	},
 	getHeight: function (val) {
 		if (val !== undefined) {
 			return val;
 		}
-		return utils.getRandomInt(B.minH, B.maxH);
+		return utils.getRandomInt(T.minH, T.maxH);
 	},
 	add: function (val) {
-		B.preCompute();
-		B.x = blw + bw;
-		B.y = CC.h - B.h - (P.fireOffset / 2),
-		B.width = bw,
-		B.height = B.h;
-		// B.drawFractalTree(B.x, B.y, B.width, B.height)
+		T.preCompute();
+		T.x = blw + bw;
+		T.y = CC.h - T.h - (P.fireOffset * 0.6),
+		T.width = bw,
+		T.height = T.h;
+		// T.drawFractalTree(T.x, T.y, T.width, T.height)
 
-		B.update(B.x, B.y, B.width, B.height);
-		return B;
+		T.update(T);
+		return T;
 	},
-	update: function (x, y, width, height) {
+	update: function (treeInstance) {
+		var x = treeInstance.x,
+			y = treeInstance.y,
+			width = treeInstance.width,
+			height = treeInstance.height;
+
 		sv();
-		fs(B.color);
+		fs(T.color);
 
 		bp();
 		mt(x, y);
@@ -123,18 +129,22 @@ Tree.prototype = {
 
 		fs('#6b4e2a')
 		el(ctx, x, y - 4, width, 10, '#6b4e2a');
+
+		if (T.flame) {
+			T.flame.update(x, y, width);
+		}
 	},
 	preCompute: function () {
-		B.lw = blw + bw + (bw === 0 ? 0 : utils.getRandomInt(B.minDist, B.maxDist));
-		blw = B.lw;
-		B.w = utils.getRandomInt(B.minW, B.maxW);
-		bw = B.w;
-		B.h = utils.getRandomInt(B.minH, B.maxH);
+		T.lw = blw + bw + (bw === 0 ? 0 : utils.getRandomInt(T.minDist, T.maxDist));
+		blw = T.lw;
+		T.w = utils.getRandomInt(T.minW, T.maxW);
+		bw = T.w;
+		T.h = utils.getRandomInt(T.minH, T.maxH);
 		// console.log(blw, bw)
-		// B.rw = CC.w - B.lw - B.w;
+		// T.rw = CC.w - T.lw - T.w;
 	},
 	removeFlame: function (that) {
-		that.flame = null;
+		that.flame = undefined;
 	}
 };
 
