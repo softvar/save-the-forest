@@ -6,8 +6,8 @@ function Player() {
 	Pl.bounceHeight = 5;
 	Pl.w = 20;
 	Pl.h = Pl.maxH;
-	Pl.x = G.buildings[0].x;
-	Pl.y = G.buildings[0].y - Pl.h;
+	Pl.x = G.trees[0].x;
+	Pl.y = G.trees[0].y - Pl.h;
 	Pl.vel = 0;
 	Pl.isJet = false;
 	Pl.isRest = true;
@@ -99,8 +99,8 @@ Player.prototype = {
 		for (var i = -30; i < Pl.w + 30; i+=6) {
 			bp();
 			mt(Pl.x + i, Pl.y + Pl.h);
-			lt(Pl.x + i - 1, Pl.y + Pl.h + utils.getRandomInt(35, 40));
-			lt(Pl.x + i + 3, Pl.y + Pl.h + utils.getRandomInt(35, 40));
+			lt(Pl.x + i - 1, Pl.y + Pl.h + utils.getRandomInt(10, G.can.height/2));
+			lt(Pl.x + i + 3, Pl.y + Pl.h + utils.getRandomInt(10, G.can.height/2));
 			lt(Pl.x + i + 1, Pl.y + Pl.h);
 			cp();
 			fl();
@@ -121,8 +121,6 @@ Player.prototype = {
 
 		Pl.w = 0;
 		Pl.h = 0;
-
-		// G.stopCycle();
 	},
 	update: function () {
 		Pl.x -= G.speed;
@@ -150,10 +148,14 @@ Player.prototype = {
 
 		if (Pl.died && !Pl.busted) {
 			Pl.y += 10;
-			if (Pl.y > CC.h - 2*P.fireOffset) {
-				if (!Pl.busted) {
-					Pl.busted = true;
+			if (Pl.isCornerStrike) {
+				if (Pl.y > CC.h - 3*P.fireOffset) {
+					if (!Pl.busted) {
+						Pl.busted = true;
+					}
 				}
+			} else if (!Pl.busted) {
+				Pl.busted = true;
 			}
 		}
 
@@ -164,7 +166,9 @@ Player.prototype = {
 		Pl.tears(2, 6);
 		Pl.tears(5, 15);
 		if (Pl.isInAir && !Pl.busted) Pl.fe();
-		if (Pl.busted) Pl.burst();
+		if (Pl.busted) {
+			Pl.burst();
+		}
 		Pl.checkCollision();
 	},
 	keyDown: function (key) {
@@ -183,7 +187,6 @@ Player.prototype = {
 			Pl.irj = false;
 			Pl.isInAir = true;
 			Pl.isKarmaLocked = false;
-			SU.play('moveAhead');
 			Pl.bounceFactor = Pl.maxH - Pl.h;
 			Pl.bounceFactor *= 4;
 			Pl.h = Pl.maxH;
@@ -202,32 +205,36 @@ Player.prototype = {
 	checkCollision: function () {
 		if (Pl.x - Pl.w <= 0) { // leftmost collision
 			Pl.died = true;
+			Pl.isCornerStrike = true;
 			return;
 		} else if (Pl.y > CC.h - P.fireOffset) { // bottom fire collision
 			Pl.died = true;
+			Pl.isCornerStrike = true;
 			return;
 		} else if (Pl.x + Pl.w > CC.w) { // rightmost collision
 			Pl.died = true;
+			Pl.isCornerStrike = true;
 			return;
 		} else if (Pl.y < 0 ) { // topmost collision
 			Pl.died = true;
+			Pl.isCornerStrike = true;
 			return;
 		}
 
 		var i, tree;
-		for (i = 0; i < G.buildings.length; i++) { // M.min(Pl.liesOn + 10, )
-			tree = G.buildings[i];
+		for (i = 0; i < G.trees.length; i++) { // M.min(Pl.liesOn + 10, )
+			tree = G.trees[i];
 
 			var playerEnd = Pl.x + Pl.w - 4; // 4 bcz legs are placed (x coord)technically before body
 			if ((playerEnd >= tree.x && playerEnd < (tree.x + tree.width + 4) && Pl.y + Pl.w + Pl.h >= tree.x)
 			) {
 				for (var j = 0; j < Pl.bounceHeight; j++) {
 					if (Pl.y + Pl.h + j >= tree.y) {
-						G.buildings[i].flame = null;
+						G.trees[i].flame = null;
 						Pl.isInAir = false;
 						Pl.liesOn = i;
 						if (!Pl.isKarmaLocked && Pl.liesOn !== Pl.lastLiesOn) {
-							console.log('hey')
+							SU.play('moveAhead');
 							G.karma += 1;
 						}
 						Pl.isKarmaLocked = true;;
