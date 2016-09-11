@@ -76,57 +76,50 @@ Menu.prototype = {
         ctx.fillText(secondText, (w - m2.width) / 2, h / 3.5);
         ctx.lineWidth = 10;
 
-        var highestScoreText = 'BEST:' + G.highscore;
-        highestScoreText = highestScoreText.split('').join('   ');
-        ctx.fillStyle = '#fff';
-        ctx.font = '35px Impact';
-        ctx.fillText(highestScoreText, (w - ctx.measureText(highestScoreText).width) / 2, h / 2.1);
-
-        if (G.isGameOver) {
+        if (!G.isInfoMenu) {
+            var highestScoreText = 'BEST: ' + G.highscore;
+            highestScoreText = highestScoreText.split('').join('   ');
             ctx.fillStyle = '#fff';
             ctx.font = '35px Impact';
-            var karmaText = 'KARMA:' + G.karma;
-            karmaText = karmaText.split('').join('   ');
+            ctx.fillText(highestScoreText, (w - ctx.measureText(highestScoreText).width) / 2, h / 2.1);
 
-            ctx.fillText(karmaText, (w - ctx.measureText(karmaText).width) / 2, h / 2.5);
-            ctx.lineWidth = 10;
-
+            // Sound circle
             ctx.beginPath();
-            ctx.arc(w*(2/3), h/1.2, 30, 0, 2 * Math.PI, false);
+            ctx.arc(w*(1/4), h/1.2, 30, 0, 2 * Math.PI, false);
             ctx.fillStyle = '#555';
             ctx.closePath();
             ctx.fill();
 
+            // Rules / Instructions circle
             ctx.beginPath();
-            ctx.arc(w*(1/3), h/1.2, 30, 0, 2 * Math.PI, false);
+            ctx.arc(w*(3/4), h/1.2, 30, 0, 2 * Math.PI, false);
             ctx.fillStyle = '#555';
             ctx.closePath();
             ctx.fill();
 
             // sound icon
             ctx.beginPath();
-            ctx.moveTo(w*(1/3) - 20, h/1.2 - 10);
-            ctx.lineTo(w*(1/3) - 20, h/1.2 + 5);
-            ctx.lineTo(w*(1/3) - 10, h/1.2 + 5);
-            ctx.lineTo(w*(1/3) + 5, h/1.2 + 15);
-            ctx.lineTo(w*(1/3) + 5, h/1.2 - 20);
-            ctx.lineTo(w*(1/3) - 10, h/1.2 - 10);
+            ctx.moveTo(w*(1/4) - 20, h/1.2 - 10);
+            ctx.lineTo(w*(1/4) - 20, h/1.2 + 5);
+            ctx.lineTo(w*(1/4) - 10, h/1.2 + 5);
+            ctx.lineTo(w*(1/4) + 5, h/1.2 + 15);
+            ctx.lineTo(w*(1/4) + 5, h/1.2 - 20);
+            ctx.lineTo(w*(1/4) - 10, h/1.2 - 10);
             ctx.fillStyle = '#222';
             ctx.closePath();
-
             if (G.isSound) {
-                ctx.fillRect(w*(1/3) + 10, h/1.2 - 5, 3, 10);
-                ctx.fillRect(w*(1/3) + 15, h/1.2 - 7, 3, 15);
-                ctx.fillRect(w*(1/3) + 20, h/1.2 - 10, 3, 20);
+                ctx.fillRect(w*(1/4) + 10, h/1.2 - 5, 3, 10);
+                ctx.fillRect(w*(1/4) + 15, h/1.2 - 7, 3, 15);
+                ctx.fillRect(w*(1/4) + 20, h/1.2 - 10, 3, 20);
             }
             ctx.fill();
 
-            // if no sound
+            // if no sound, show / on icon
             if (!G.isSound) {
                 ctx.save();
                 ctx.beginPath();
-                ctx.moveTo(w*(1/3) + 10, h/1.2 - 22);
-                ctx.lineTo(w*(1/3) - 10, h/1.2 + 22);
+                    ctx.moveTo(w*(1/4) + 10, h/1.2 - 22);
+                    ctx.lineTo(w*(1/4) - 10, h/1.2 + 22);
                 ctx.closePath();
                 ctx.fill();
                 ctx.lineWidth = 5;
@@ -135,38 +128,105 @@ Menu.prototype = {
                 ctx.restore();
             }
 
-            // download icon
+            // instructions icon
+            ctx.fillRect(w*(3/4) - 2, h/1.2, 5, 15);
             ctx.beginPath();
-            ctx.moveTo(w*(2/3) - 10, h/1.2 - 15);
-            ctx.lineTo(w*(2/3) - 10, h/1.2 - 15 + 15);
-            ctx.lineTo(w*(2/3) - 20, h/1.2 - 15 + 15);
-
-            ctx.lineTo(w*(2/3), h/1.2 - 15 + 30);
-            ctx.lineTo(w*(2/3) + 20, h/1.2 - 15 + 15);
-
-            ctx.lineTo(w*(2/3) + 10, h/1.2 - 15 + 15);
-            ctx.lineTo(w*(2/3) + 10, h/1.2 - 15);
-
+            ctx.arc(w*(3/4), h/1.2 - 10, 5, 0, 2 * Math.PI, false);
+            ctx.closePath();
             ctx.fillStyle = '#222';
+            ctx.fill();
+
+            if (G.isGameOver) {
+                ctx.fillStyle = '#fff';
+                ctx.font = '35px Impact';
+                var karmaText = 'KARMA: ' + G.karma;
+                karmaText = karmaText.split('').join('   ');
+
+                ctx.fillText(karmaText, (w - ctx.measureText(karmaText).width) / 2, h / 2.5);
+                ctx.lineWidth = 10;
+
+                ctx.beginPath();
+                    ctx.arc(w*(2/4), h/1.2, 30, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = '#555';
+                ctx.closePath();
+                ctx.fill();
+
+                // download icon
+                ctx.beginPath();
+                    ctx.moveTo(w*(2/4) - 10, h/1.2 - 15);
+                    ctx.lineTo(w*(2/4) - 10, h/1.2 - 15 + 15);
+                    ctx.lineTo(w*(2/4) - 20, h/1.2 - 15 + 15);
+
+                    ctx.lineTo(w*(2/4), h/1.2 - 15 + 35);
+                    ctx.lineTo(w*(2/4) + 20, h/1.2 - 15 + 15);
+
+                    ctx.lineTo(w*(2/4) + 10, h/1.2 - 15 + 15);
+                    ctx.lineTo(w*(2/4) + 10, h/1.2 - 15);
+
+                    ctx.fillStyle = '#222';
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Play button
+            ctx.beginPath();
+                ctx.arc(w/2, h/1.6, 50, 0, 2 * Math.PI, false);
+                ctx.fillStyle = '#793f02';
             ctx.closePath();
             ctx.fill();
+
+            var tw = 20, th = h/1.6 - tw;
+            ctx.beginPath();
+                ctx.moveTo(w/2 - tw/2, th);
+                ctx.lineTo(w/2 + tw, th + 20);
+                ctx.lineTo(w/2 - tw/2, th + 40);
+                ctx.fillStyle = '#fff';
+            ctx.closePath();
+            ctx.fill();
+        } else {
+            // back button
+            ctx.beginPath();
+            ctx.arc(w/10, h/4.4, 30, 0, 2 * Math.PI, false);
+            ctx.fillStyle = '#555';
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+                ctx.moveTo(w/10, h/4.4-5);
+                ctx.lineTo(w/10, h/4.4-5 - 10);
+                ctx.lineTo(w/10 - 20, h/4.4-5 + 5);
+                ctx.lineTo(w/10, h/4.4-5 + 20);
+                ctx.lineTo(w/10, h/4.4-5 + 10);
+                ctx.lineTo(w/10 + 20, h/4.4-5 + 10);
+                ctx.lineTo(w/10 + 20, h/4.4-5);
+            ctx.closePath();
+            ctx.fillStyle = '#000';
+            ctx.fill();
+
+            // show info
+            var instructionLines = [
+                'Save our planet Earth!',
+                'Protect Forest! Don\'t burn them!',
+                'Abrupt climatic changes. Time to worry!',
+                'Extinguish fire on trees.',
+                'Hit spacebar or tap to jump player.',
+                'Earn Karma! Nature will show her love!',
+                'JS13KGames 16 - hidden glitches',
+                'Climate, Chipko movement(player stuck on tree)'
+            ];
+            ctx.font = '20px Helvetica';
+            ctx.fillStyle = '#fff';
+            for (var l = 0; l < instructionLines.length; l++) {
+                var line = instructionLines[l];
+                if (l % 2 === 0) {
+                    ctx.beginPath();
+                        ctx.arc(w / 10, h/2.5 + l*50, 10, 0, 2*Math.PI, false);
+                        ctx.fill();
+                    ctx.closePath();
+                }
+                ctx.fillText(line, w/10 + 50, h/2.5 + l*50);
+            }
         }
-
-        // Play button
-        ctx.beginPath();
-        ctx.arc(w/2, h/1.6, 50, 0, 2 * Math.PI, false);
-        ctx.fillStyle = '#793f02';
-        ctx.closePath();
-        ctx.fill();
-
-        var tw = 20, th = h/1.6 - tw;
-        ctx.beginPath();
-        ctx.moveTo(w/2 - tw/2, th);
-        ctx.lineTo(w/2 + tw, th + 20);
-        ctx.lineTo(w/2 - tw/2, th + 40);
-        ctx.fillStyle = '#fff';
-        ctx.closePath();
-        ctx.fill();
         rs();
         return canvas;
     },
@@ -212,15 +272,26 @@ Menu.prototype = {
             // play btn clicked
             G.menu = null;
             G.restart();
-        } else if (x >= w*(2/3) - 30 && x <= w*(2/3) + 30 &&
+        } else if (x >= w*(2/4) - 30 && x <= w*(2/4) + 30 &&
             y >= h/1.2 - 30 && y <= h/1.2 + 30) {
             // download clicked
             downloadCanvas();
-        } else if (x >= w*(1/3) - 30 && x <= w*(1/3) + 30 &&
+        } else if (x >= w*(1/4) - 30 && x <= w*(1/4) + 30 &&
             y >= h/1.2 - 30 && y <= h/1.2 + 30) {
             // sound clicked
+            !G.isSound && SU.play('moveAhead');
             G.isSound = +(!G.isSound);
             utils.setLocalStorageData(G.isSound, true);
+            MN.heat = MN.getHeatMap();
+        } else if (x >= w*(3/4) - 30 && x <= w*(3/4) + 30 &&
+            y >= h/1.2 - 30 && y <= h/1.2 + 30) {
+            // info clicked
+            G.isInfoMenu = true;
+            MN.heat = MN.getHeatMap();
+        } else if (x >= w*(1/10) - 30 && x <= w*(1/10) + 30 &&
+            y >= h/4.4 - 30 && y <= h/4.4 + 30) {
+            // info clicked
+            G.isInfoMenu = false;
             MN.heat = MN.getHeatMap();
         }
     },
