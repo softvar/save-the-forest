@@ -82,10 +82,17 @@ var P = {
     tbOffset: 20
 };
 
+function canvasToImage() {
+    G.dataURL = document.getElementById('game-canvas').toDataURL('image/png');
+}
+
 function downloadCanvas() {
-    var dataURL = document.getElementById('game-canvas').toDataURL("image/png");
     var windowRef = _.open();
-    windowRef.document.write('<img src="'+dataURL+'"/>');
+    if (windowRef) {
+        windowRef.document.write('<img src="' + G.dataURL + '"/>');
+    } else {
+        alert('Your browser prevented the window from opening. Please allow to view game screenshot.')
+    }
 }
 
 addEventListener('DOMContentLoaded',function(){
