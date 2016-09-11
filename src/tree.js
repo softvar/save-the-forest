@@ -13,14 +13,14 @@ function Tree(config) {
 	T.maxDist = 200;
 	T.branchThickness = 3;
 
-	CC.w = utils.pI(CC.width);
-	CC.h = utils.pI(CC.height);
+	CC.w = utils.pI(G.can.width);
+	CC.h = utils.pI(G.can.height);
 
 	T.color = '#a77b44';
 	this.add();
 	if (!config.isNoFlame) {
-		T.flame = new SmokyFlame();
-		T.flame.addEntity(Flame);
+		this.flame = smoky;
+		this.flame.addEntity(Flame);
 	}
 	return T;
 }
@@ -91,7 +91,7 @@ Tree.prototype = {
 		T.height = T.h;
 		// T.drawFractalTree(T.x, T.y, T.width, T.height)
 
-		T.update(T);
+		//T.update(T);
 		return T;
 	},
 	update: function (treeInstance) {
@@ -127,11 +127,11 @@ Tree.prototype = {
 		fl();
 		rs();
 
-		fs('#6b4e2a')
+		fs('#444')
 		el(ctx, x, y - 4, width, 10, '#6b4e2a');
 
-		if (T.flame) {
-			T.flame.update(x, y, width);
+		if (treeInstance.flame) {
+			treeInstance.flame.update(x, y, width);
 		}
 	},
 	preCompute: function () {
