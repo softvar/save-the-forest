@@ -113,6 +113,7 @@ Player.prototype = {
 			this.dieParticles = new Particles(Pl.x, Pl.y);
 		} else if (PS.finished) {
 			G.stopCycle();
+			PS.finished = false;
 		}
 
 		if (!Pl.w && !Pl.h) {
@@ -203,7 +204,7 @@ Player.prototype = {
 		}*/
 	},
 	checkCollision: function () {
-		if (Pl.x - Pl.w <= 0) { // leftmost collision
+		if (Pl.x <= 0) { // leftmost collision
 			Pl.died = true;
 			Pl.isCornerStrike = true;
 			return;
@@ -234,7 +235,7 @@ Player.prototype = {
 						Pl.isInAir = false;
 						Pl.liesOn = i;
 						if (!Pl.isKarmaLocked && Pl.liesOn !== Pl.lastLiesOn) {
-							SU.play('moveAhead');
+							G.karma && SU.play('moveAhead');
 							G.karma += 1;
 						}
 						Pl.isKarmaLocked = true;;

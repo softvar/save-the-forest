@@ -8,10 +8,10 @@ function Tree(config) {
 	T.minW = 10;
 	T.maxW = 80;
 	T.minH = P.fireOffset;
-	T.maxH = 400;
+	T.maxH = G.isMobile() ? 300 : 400;
 	T.minDist = 50;
-	T.maxDist = 200;
-	T.branchThickness = 3;
+	T.maxDist = G.isMobile() ? 100 : 200;
+	// T.branchThickness = 3;
 
 	CC.w = utils.pI(G.can.width);
 	CC.h = utils.pI(G.can.height);

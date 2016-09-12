@@ -86,7 +86,7 @@ Flame = function () {
         return false;
     };
     Flame.prototype.draw = function (x, y, w) {
-        this.g = ctx.createRadialGradient(x, y, 0, x, y, this.r * 1.5);
+        this.g = ctx.createRadialGradient(x, y, 0, x, y, w * 1.2);
         this.g.addColorStop(0, 'rgba(255,255,255,1)');
         this.g.addColorStop(1, 'rgba(255,120,0,0)');
 
@@ -99,7 +99,7 @@ Flame = function () {
         g.addColorStop(0, 'rgba(255,180,0,' + rand(0.2, 0.9) + ')');
         g.addColorStop(1, 'rgba(255,180,0,0)');
         drawCircle(x, y, this.rg, g);
-        return drawCircle(x + rand(-1.5, 1.5), y + rand(-1.5, 1.5), this.r + 10, this.g );
+        return drawCircle(x + rand(-1.5, 1.5), y + rand(-1.5, 1.5), w, this.g );
     };
     return Flame;
 }();
