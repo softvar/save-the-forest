@@ -10,7 +10,7 @@ var gulp      =   require('gulp'),
   htmlmin     =   require('gulp-htmlmin'),
   replace     =   require('gulp-replace-path');
 
-var APP_NAME = 'game';
+var APP_NAME = 'save_the_forest';
 var bases = {
   app: 'src/',
   dist: 'dist/',
