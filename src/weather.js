@@ -110,14 +110,14 @@ SunMoon.prototype = {
 	},
 	update: function () {
 		// lets assume 30 secs is 1 day, so 15-15 secs day-night
-		if (Weather.dt / 1000 > 5 * diffInWeatherTime ||
-			Weather.dt / 1000 > 4 * diffInWeatherTime ||
-			Weather.dt / 1000 > 3 * diffInWeatherTime
+		if (Weather.dt / 1000 % (5*diffInWeatherTime) > 5*diffInWeatherTime ||
+			Weather.dt / 1000 % (5*diffInWeatherTime) > 4*diffInWeatherTime ||
+			Weather.dt / 1000 % (5*diffInWeatherTime) > 3*diffInWeatherTime
 		) {
 			G.period = 'night';
-		} else if (Weather.dt / 1000 > 2 * diffInWeatherTime) {
+		} else if (Weather.dt / 1000 % (5*diffInWeatherTime) > 2*diffInWeatherTime) {
 			G.period = 'evening';
-		} else if (Weather.dt / 1000 > 1 * diffInWeatherTime) {
+		} else if (Weather.dt / 1000 % (5*diffInWeatherTime) > 1*diffInWeatherTime) {
 			G.period = 'afternoon';
 		} else {
 			G.period = 'morning';
@@ -343,7 +343,7 @@ Weather.prototype = {
 		sunMoon.update();
 		cloud.update();
 
-		console.log(M.ceil(Weather.dt / 1000))
+		// console.log(M.ceil(Weather.dt / 1000))
 		if (!this.canRain && M.ceil(Weather.dt / 1000) % 16 === 0) {
 			this.canRain = true;
 			this.isRaining = true;
