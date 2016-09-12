@@ -2,7 +2,7 @@ var MN;
 function Menu() {
     MN = this;
     this.y = 0;
-    this.font = '50px Impact';
+    this.font = '50px Helvetica';
     this.fireColor = 'rgb(255, 56, 8)';
 
     ctx.fillStyle = '#fff'
@@ -61,10 +61,18 @@ Menu.prototype = {
             h = G.can.height,
             color = MN.fireColor,
             firstText = G.isGameOver ? 'GAME' : 'SAVE',
-            secondText = G.isGameOver ? 'OVER' : 'FOREST';
+            secondText = G.isGameOver ? 'OVER' : 'THE';
+            thirdText = G.isGameOver ? '' : 'FOREST';
 
-        firstText = firstText.split('').join('   ');
-        secondText = secondText.split('').join('   ');
+        if (G.isMobile()) {
+            firstText = firstText.split('').join(' ');
+            secondText = secondText.split('').join(' ');
+            thirdText = thirdText.split('').join(' ');
+        } else {
+            firstText = firstText.split('').join('   ');
+            secondText = secondText.split('').join('   ');
+            thirdText = thirdText.split('').join('   ');
+        }
 
         ctx.fillStyle = color;
         ctx.strokeStyle = color;
@@ -72,15 +80,21 @@ Menu.prototype = {
 
         var m1 = ctx.measureText(firstText);
         var m2 = ctx.measureText(secondText);
-        ctx.fillText(firstText, (w - m1.width) / 2, h / 5);
-        ctx.fillText(secondText, (w - m2.width) / 2, h / 3.5);
+        var m3 = ctx.measureText(thirdText);
+        ctx.fillText(firstText, (w - m1.width) / 2, h / 6);
+        ctx.fillText(secondText, (w - m2.width) / 2, h / 4);
+        ctx.fillText(thirdText, (w - m3.width) / 2, h / 3);
         ctx.lineWidth = 10;
 
         if (!G.isInfoMenu) {
             var highestScoreText = 'BEST: ' + G.highscore;
-            highestScoreText = highestScoreText.split('').join('   ');
+            if (G.isMobile()) {
+                highestScoreText = highestScoreText.split('').join(' ');
+            } else {
+                highestScoreText = highestScoreText.split('').join('   ');
+            }
             ctx.fillStyle = '#fff';
-            ctx.font = '35px Impact';
+            ctx.font = '35px Helvetica';
             ctx.fillText(highestScoreText, (w - ctx.measureText(highestScoreText).width) / 2, h / 2.1);
 
             // Sound circle
@@ -138,9 +152,14 @@ Menu.prototype = {
 
             if (G.isGameOver) {
                 ctx.fillStyle = '#fff';
-                ctx.font = '35px Impact';
+                ctx.font = '35px Helvetica';
                 var karmaText = 'KARMA: ' + G.karma;
-                karmaText = karmaText.split('').join('   ');
+
+                if (G.isMobile()) {
+                    karmaText = karmaText.split('').join(' ');
+                } else {
+                    karmaText = karmaText.split('').join('   ');
+                }
 
                 ctx.fillText(karmaText, (w - ctx.measureText(karmaText).width) / 2, h / 2.5);
                 ctx.lineWidth = 10;
@@ -185,20 +204,22 @@ Menu.prototype = {
             ctx.fill();
         } else {
             // back button
+            var hFactor = G.isMobile() ? 10 : 4.4;
+
             ctx.beginPath();
-            ctx.arc(w/10, h/4.4, 30, 0, 2 * Math.PI, false);
+            ctx.arc(w/10, h/hFactor, 30, 0, 2 * Math.PI, false);
             ctx.fillStyle = '#555';
             ctx.closePath();
             ctx.fill();
 
             ctx.beginPath();
-                ctx.moveTo(w/10, h/4.4-5);
-                ctx.lineTo(w/10, h/4.4-5 - 10);
-                ctx.lineTo(w/10 - 20, h/4.4-5 + 5);
-                ctx.lineTo(w/10, h/4.4-5 + 20);
-                ctx.lineTo(w/10, h/4.4-5 + 10);
-                ctx.lineTo(w/10 + 20, h/4.4-5 + 10);
-                ctx.lineTo(w/10 + 20, h/4.4-5);
+                ctx.moveTo(w/10, h/hFactor-5);
+                ctx.lineTo(w/10, h/hFactor-5 - 10);
+                ctx.lineTo(w/10 - 20, h/hFactor-5 + 5);
+                ctx.lineTo(w/10, h/hFactor-5 + 20);
+                ctx.lineTo(w/10, h/hFactor-5 + 10);
+                ctx.lineTo(w/10 + 20, h/hFactor-5 + 10);
+                ctx.lineTo(w/10 + 20, h/hFactor-5);
             ctx.closePath();
             ctx.fillStyle = '#000';
             ctx.fill();
@@ -212,19 +233,22 @@ Menu.prototype = {
                 'Hit spacebar or tap to jump player.',
                 'Earn Karma! Nature will show her love!',
                 'JS13KGames 16 - hidden glitches',
-                'Climate, Chipko movement(player stuck on tree)'
+                'Climate Abnormalities, Player Loves Trees',
+                '(Player struggles to jump off tree)',
+                'More hinderances once speed > 1.6 mph'
             ];
-            ctx.font = '20px Helvetica';
+            ctx.font = G.isMobile() ? '15px Helvetica' : '20px Helvetica';
             ctx.fillStyle = '#fff';
             for (var l = 0; l < instructionLines.length; l++) {
                 var line = instructionLines[l];
-                if (l % 2 === 0) {
+                var hOffset = G.isMobile() ? l*40 : l*45;
+                if (l === 0 || l === 2 || l === 4 || l === 6) {
                     ctx.beginPath();
-                        ctx.arc(w / 10, h/2.5 + l*50, 10, 0, 2*Math.PI, false);
+                        ctx.arc(w / 10, h/2.6 + hOffset, 10, 0, 2*Math.PI, false);
                         ctx.fill();
                     ctx.closePath();
                 }
-                ctx.fillText(line, w/10 + 50, h/2.5 + l*50);
+                ctx.fillText(line, w/10 + (G.isMobile() ? 25: 50), h/2.6 + hOffset);
             }
         }
         rs();
@@ -267,20 +291,24 @@ Menu.prototype = {
             h = G.can.height,
             ctx = MN.heat.getContext('2d');
 
+        var hFactor = G.isMobile() ? 10 : 4.4;
+
         if (x >= w/2 - 50 && x <= w/2 + 50 &&
             y >= h/1.6 - 50 && y <= h/1.6 + 50) {
             // play btn clicked
             G.menu = null;
             G.restart();
+            SU.play('playGame');
         } else if (x >= w*(2/4) - 30 && x <= w*(2/4) + 30 &&
             y >= h/1.2 - 30 && y <= h/1.2 + 30) {
             // download clicked
             downloadCanvas();
+            SU.play('download');
         } else if (x >= w*(1/4) - 30 && x <= w*(1/4) + 30 &&
             y >= h/1.2 - 30 && y <= h/1.2 + 30) {
             // sound clicked
-            !G.isSound && SU.play('moveAhead');
             G.isSound = +(!G.isSound);
+            G.isSound && SU.play('soundOn');
             utils.setLocalStorageData(G.isSound, true);
             MN.heat = MN.getHeatMap();
         } else if (x >= w*(3/4) - 30 && x <= w*(3/4) + 30 &&
@@ -288,11 +316,13 @@ Menu.prototype = {
             // info clicked
             G.isInfoMenu = true;
             MN.heat = MN.getHeatMap();
+            SU.play('info');
         } else if (x >= w*(1/10) - 30 && x <= w*(1/10) + 30 &&
-            y >= h/4.4 - 30 && y <= h/4.4 + 30) {
-            // info clicked
+            y >= h/hFactor - 30 && y <= h/hFactor + 30) {
+            // back btn clicked
             G.isInfoMenu = false;
             MN.heat = MN.getHeatMap();
+            SU.play('info');
         }
     },
     update: function () {
