@@ -9,7 +9,7 @@ function Game() {
 
 	G.highscore = utils.getLocalStorageData() || 0;
 	G.isSound = utils.getLocalStorageData(true);
-	if (G.isSound === undefined || G.isSound === null) {
+	if (G.isSound !== 0) {
 		G.isSound = 1;
 	}
 
