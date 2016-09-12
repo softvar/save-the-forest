@@ -1,10 +1,10 @@
 {
-  "name": "",
+  "name": "Save The Forest",
   "version": "1.0.0",
-  "description": "",
+  "description": "Save burning of forests!",
   "main": "main.js",
   "author": "Varun Malhotra",
-  "repository": "https://github.com/softvar/",
+  "repository": "https://github.com/softvar/save-the-forest",
   "license": "MIT",
   "devDependencies": {
     "gulp": "^3.9.1",
