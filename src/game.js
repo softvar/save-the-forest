@@ -2,7 +2,7 @@ var G, ctx, CC, background, player, weather, smoky;
 function Game() {
 	G = this;
 	G.isInProgress = true;
-	G.canSpeedBeIncreased = true;
+	G.canSpeedBeIncreased = G.canExplode = true;
 	G.backgroundColor = '#fff';
 
 	G.karma = 0;
@@ -89,20 +89,23 @@ Game.prototype = {
 		});
 	},
 	stopCycle: function () {
+		G.isGameOver = true;
+		G.isInProgress = false;
+
 		flameBack.update();
 		canvasToImage(); // get image before spash screen
-		G.isGameOver = true;
-   		G.isInProgress = false;
 
    		// console.log('Boom! DIE!');
    		// update high score
    		if (G.karma > G.highscore) {
+   			SU.play('highestScore');
    			G.highscore = G.karma;
    			utils.setLocalStorageData(G.karma);
    		}
-  		G.menu = new Menu();
 
    		SU.play('gameOver');
+
+  		G.menu = new Menu();
 	},
 	cycle: function () {
 		var now = new Date().getTime();
@@ -113,15 +116,21 @@ Game.prototype = {
 
 		//SU.play('game');
 		time = now;
-
 		if (G.menu) {
-			G.menu.update();
+			G.menu.update && G.menu.update();
 			return;
 		}
 
-		//console.log(now - G.gameStartTime)
+		if (G.canExplode && M.ceil((now - G.gameStartTime) / 1000) % 6 === 0) {
+			G.mildExplosion ? SU.play('explosion2') : SU.play('explosion1');
+			G.mildExplosion = !G.mildExplosion;
+			G.canExplode = false;
+		} else if (M.ceil((now - G.gameStartTime) / 1000) % 7 === 0) {
+			G.canExplode = true;
+		}
+
 		if (G.canSpeedBeIncreased && M.ceil((now - G.gameStartTime) / 1000) % 10 === 0) {
-			G.speed += 0.2;
+			G.speed += G.isMobile() ? 0.1 : 0.2;
 			WD.speed = utils.getRandomInt(1, 30);
 			G.canSpeedBeIncreased = false;
 		} else if (M.ceil((now - G.gameStartTime) / 1000) % 11 === 0) {
@@ -131,6 +140,13 @@ Game.prototype = {
 
 		fs(G.backgroundColor);
 		fr(0, 0, CC.w, CC.h);
+
+		if (G.speed > 1.6 &&
+			utils.getRandomInt(0, 10) === 10
+		) {
+			G.showNoisyScreen();
+			utils.getRandomInt(0, 10) === 4 && SU.play('glitch');
+		}
 
 		//background.burnBurnBurn();
 		weather.update();
@@ -154,6 +170,20 @@ Game.prototype = {
 			player.update();
 		}
 		flameBack.update();
+	},
+	showNoisyScreen: function () {
+		var w = G.can.width,
+	       h = G.can.height,
+	       idata = ctx.createImageData(w, h),
+	       buffer32 = new Uint32Array(idata.data.buffer),
+	       len = buffer32.length,
+	       i = 0;
+
+	   for (; i < len;) {
+	       buffer32[i++] = ((255 * Math.random())|0) << 24;
+	   }
+
+	   ctx.putImageData(idata, 0, 0);
 	},
 	addInitialtrees: function () {
 		G.trees = [];

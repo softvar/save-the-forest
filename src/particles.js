@@ -23,10 +23,10 @@ Particles.prototype = {
 			fr(PS.x + 4*i, M.min(PS.y + this.vyL1, CC.h - 50), utils.getRandomInt(4, 6), utils.getRandomInt(4, 6));
 		}
 		for (var i = 1; i < 10; i+= 2) {
-			fr(PS.x + 4*i, M.min(PS.y + 5 + this.vyL2, CC.h - 50), utils.getRandomInt(4, 6), utils.getRandomInt(4, 6));
+			fr(PS.x + 4*i, M.min(PS.y + 7 + this.vyL2, CC.h - 50), utils.getRandomInt(4, 6), utils.getRandomInt(4, 6));
 		}
 		for (var i = 0; i < 10; i+= 2) {
-			fr(PS.x + 4*i, M.min(PS.y + 10 + this.vyL3, CC.h - 50), utils.getRandomInt(4, 6), utils.getRandomInt(4, 6));
+			fr(PS.x + 4*i, M.min(PS.y + 15 + this.vyL3, CC.h - 50), utils.getRandomInt(4, 6), utils.getRandomInt(4, 6));
 		}
 
 		this.diff = CC.h - PS.y;
