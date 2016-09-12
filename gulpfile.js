@@ -1,14 +1,14 @@
-var gulp      =   require('gulp');
-var zip       =   require('gulp-zip');
-var watch     =   require('gulp-watch');
-var clean     =   require('gulp-clean');
-var jshint    =   require('gulp-jshint');
-var concat    =   require('gulp-concat');
-var uglify    =   require('gulp-uglify');
-var cssmin    =   require('gulp-cssmin');
-var rename    =   require('gulp-rename');
-var htmlmin   =   require('gulp-htmlmin');
-var replace   =   require('gulp-replace-path');
+var gulp      =   require('gulp'),
+  zip         =   require('gulp-zip'),
+  watch       =   require('gulp-watch'),
+  clean       =   require('gulp-clean'),
+  jshint      =   require('gulp-jshint'),
+  concat      =   require('gulp-concat'),
+  uglify      =   require('gulp-uglify'),
+  cssmin      =   require('gulp-cssmin'),
+  rename      =   require('gulp-rename'),
+  htmlmin     =   require('gulp-htmlmin'),
+  replace     =   require('gulp-replace-path');
 
 var APP_NAME = 'game';
 var bases = {
@@ -19,8 +19,10 @@ var bases = {
 var paths = {
   scripts: [
     'src/utils.js',
+    'src/jsfxr.js',
     'src/sound.js',
     'src/flame.js',
+    'src/menu.js',
     'src/weather.js',
     'src/particles.js',
     'src/background.js',
@@ -47,7 +49,7 @@ gulp.task('scripts', ['clean'], function() {
     // .pipe(jshint.reporter('default'))
     .pipe(concat('game.js'))
     .pipe(gulp.dest(bases.dist)) // for dev mode
-    //.pipe(uglify())
+    .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest(bases.dist)) // for prod
 });
