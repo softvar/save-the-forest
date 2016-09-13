@@ -19,8 +19,12 @@ function Tree(config) {
 	T.color = '#a77b44';
 	this.add();
 	if (!config.isNoFlame) {
-		this.flame = smoky;
-		this.flame.addEntity(Flame);
+		if (G.isMobile()) {
+			this.flame = true;
+		} else {
+			this.flame = smoky;
+			this.flame.addEntity(Flame);
+		}
 	}
 	return T;
 }
@@ -131,8 +135,28 @@ Tree.prototype = {
 		el(ctx, x, y - 4, width, 10, '#6b4e2a');
 
 		if (treeInstance.flame) {
-			treeInstance.flame.update(x, y, width);
+			if (G.isMobile()) {
+				T.addCircle(x, y, width);
+			} else {
+				treeInstance.flame.update(x, y, width);
+			}
 		}
+	},
+	addCircle: function (x, y, width) {
+		bp();
+		ar(x + (width/2), y, width/2, 0, Math.PI*2, false);
+		fs('rgba(255, 0, 0, 0.4)');
+		fl();
+
+		bp();
+		ar(x + (width/2), y, width/3, 0, Math.PI*2, false);
+		fs('rgba(255, 165, 0, 0.4)');
+		fl();
+
+		bp();
+		ar(x + (width/2), y, width/6, 0, Math.PI*2, false);
+		fs('rgba(255, 255, 0, ' + utils.getRandomInt(0.3, 0.5)/10 + ')');
+		fl();
 	},
 	preCompute: function () {
 		T.lw = blw + bw + (bw === 0 ? 0 : utils.getRandomInt(T.minDist, T.maxDist));

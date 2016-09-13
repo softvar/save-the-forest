@@ -169,6 +169,9 @@ var flameBack = new function() {
         width = (this.canvas.width + 30) / scale;
         height = P.fireOffset / scale;
 
+        width = Math.ceil(width);
+        height = Math.ceil(height);
+
         colorMap = Array(width * height);
 
         for(var i = 0; i < colorMap.length; i++)
@@ -205,9 +208,20 @@ var flameBack = new function() {
 
     // main render loop
    this.update = function() {
-        smooth();
-        draw();
-        fan = utils.getRandomInt(0, 6);
+   		if (!G.isMobile()) {
+	        smooth();
+	        draw();
+	        fan = utils.getRandomInt(0, 6);
+	    } else {
+	    	var grd = ctx.createLinearGradient(0, CC.h - P.fireOffset , 0, G.can.height);
+	    	grd.addColorStop(0, 'rgba(255, 0, 0, ' + utils.getRandomInt(8, 10)/10 + ')');
+	    	grd.addColorStop(0.7, 'rgba(255, 165, 0, ' + utils.getRandomInt(8, 10)/10 + ')');
+	    	grd.addColorStop(0.9, 'rgba(255, 255, 0, ' + utils.getRandomInt(8, 10)/10 + ')');
+	    	sv();
+	    	fs(grd);
+	    	fr(0, CC.h - P.fireOffset, G.can.width, P.fireOffset)
+	    	rs();
+	    }
     };
 
     var smooth = function() {

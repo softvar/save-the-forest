@@ -141,7 +141,8 @@ Game.prototype = {
 		fs(G.backgroundColor);
 		fr(0, 0, CC.w, CC.h);
 
-		if (G.speed > 1.6 &&
+		var speedIncFactor = G.isMobile() ? 1.1 : 1.6;
+		if (G.speed >= speedIncFactor &&
 			utils.getRandomInt(0, 10) === 10
 		) {
 			G.showNoisyScreen();
@@ -302,11 +303,13 @@ Game.prototype = {
 		}
 	},
 	keyDown: function(e) {
-		// 32 is space
-		/*if (e.keyCode === 32 && !G.isInProgress) {
-			G.restart();
+		// 13 is enter
+		if ((e.keyCode === 13 || e.keyCode === 32) && G.menu) {
+			G.menu = null;
+            G.restart();
+            SU.play('playGame');
 			return;
-		}*/
+		}
 		if (!G.isInProgress) {
 			return;
 		}

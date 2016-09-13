@@ -341,22 +341,24 @@ Weather.prototype = {
 		Weather.dt = now - G.gameStartTime;
 
 		sunMoon.update();
-		cloud.update();
+		if (!G.isMobile()) {
+			cloud.update();
 
-		// console.log(M.ceil(Weather.dt / 1000))
-		if (!this.canRain && M.ceil(Weather.dt / 1000) % 16 === 0) {
-			this.canRain = true;
-			this.isRaining = true;
-		} else if (M.ceil(Weather.dt / 1000) % 33  === 0) {
-			this.canRain = false;
-			this.isRaining = false;
+			// console.log(M.ceil(Weather.dt / 1000))
+			if (!this.canRain && M.ceil(Weather.dt / 1000) % 16 === 0) {
+				this.canRain = true;
+				this.isRaining = true;
+			} else if (M.ceil(Weather.dt / 1000) % 33  === 0) {
+				this.canRain = false;
+				this.isRaining = false;
+			}
+
+			if (this.canRain && this.isRaining) {
+				rain.update();
+			}
+
+			wind.update();
 		}
-
-		if (this.canRain && this.isRaining) {
-			rain.update();
-		}
-
-		wind.update();
 	},
 	init: function () {
 		cloud = new Cloud();
