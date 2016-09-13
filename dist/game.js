@@ -951,22 +951,24 @@ Weather.prototype = {
 		Weather.dt = now - G.gameStartTime;
 
 		sunMoon.update();
-		cloud.update();
+		if (!G.isMobile()) {
+			cloud.update();
 
-		// console.log(M.ceil(Weather.dt / 1000))
-		if (!this.canRain && M.ceil(Weather.dt / 1000) % 16 === 0) {
-			this.canRain = true;
-			this.isRaining = true;
-		} else if (M.ceil(Weather.dt / 1000) % 33  === 0) {
-			this.canRain = false;
-			this.isRaining = false;
+			// console.log(M.ceil(Weather.dt / 1000))
+			if (!this.canRain && M.ceil(Weather.dt / 1000) % 16 === 0) {
+				this.canRain = true;
+				this.isRaining = true;
+			} else if (M.ceil(Weather.dt / 1000) % 33  === 0) {
+				this.canRain = false;
+				this.isRaining = false;
+			}
+
+			if (this.canRain && this.isRaining) {
+				rain.update();
+			}
+
+			wind.update();
 		}
-
-		if (this.canRain && this.isRaining) {
-			rain.update();
-		}
-
-		wind.update();
 	},
 	init: function () {
 		cloud = new Cloud();
@@ -1188,6 +1190,9 @@ var flameBack = new function() {
         width = (this.canvas.width + 30) / scale;
         height = P.fireOffset / scale;
 
+        width = Math.ceil(width);
+        height = Math.ceil(height);
+
         colorMap = Array(width * height);
 
         for(var i = 0; i < colorMap.length; i++)
@@ -1224,9 +1229,20 @@ var flameBack = new function() {
 
     // main render loop
    this.update = function() {
-        smooth();
-        draw();
-        fan = utils.getRandomInt(0, 6);
+   		if (!G.isMobile()) {
+	        smooth();
+	        draw();
+	        fan = utils.getRandomInt(0, 6);
+	    } else {
+	    	var grd = ctx.createLinearGradient(0, CC.h - P.fireOffset , 0, G.can.height);
+	    	grd.addColorStop(0, 'rgba(255, 0, 0, ' + utils.getRandomInt(8, 10)/10 + ')');
+	    	grd.addColorStop(0.7, 'rgba(255, 165, 0, ' + utils.getRandomInt(8, 10)/10 + ')');
+	    	grd.addColorStop(0.9, 'rgba(255, 255, 0, ' + utils.getRandomInt(8, 10)/10 + ')');
+	    	sv();
+	    	fs(grd);
+	    	fr(0, CC.h - P.fireOffset, G.can.width, P.fireOffset)
+	    	rs();
+	    }
     };
 
     var smooth = function() {
@@ -1577,8 +1593,12 @@ function Tree(config) {
 	T.color = '#a77b44';
 	this.add();
 	if (!config.isNoFlame) {
-		this.flame = smoky;
-		this.flame.addEntity(Flame);
+		if (G.isMobile()) {
+			this.flame = true;
+		} else {
+			this.flame = smoky;
+			this.flame.addEntity(Flame);
+		}
 	}
 	return T;
 }
@@ -1689,8 +1709,28 @@ Tree.prototype = {
 		el(ctx, x, y - 4, width, 10, '#6b4e2a');
 
 		if (treeInstance.flame) {
-			treeInstance.flame.update(x, y, width);
+			if (G.isMobile()) {
+				T.addCircle(x, y, width);
+			} else {
+				treeInstance.flame.update(x, y, width);
+			}
 		}
+	},
+	addCircle: function (x, y, width) {
+		bp();
+		ar(x + (width/2), y, width/2, 0, Math.PI*2, false);
+		fs('rgba(255, 0, 0, 0.4)');
+		fl();
+
+		bp();
+		ar(x + (width/2), y, width/3, 0, Math.PI*2, false);
+		fs('rgba(255, 165, 0, 0.4)');
+		fl();
+
+		bp();
+		ar(x + (width/2), y, width/6, 0, Math.PI*2, false);
+		fs('rgba(255, 255, 0, ' + utils.getRandomInt(0.3, 0.5)/10 + ')');
+		fl();
 	},
 	preCompute: function () {
 		T.lw = blw + bw + (bw === 0 ? 0 : utils.getRandomInt(T.minDist, T.maxDist));
@@ -1850,7 +1890,8 @@ Game.prototype = {
 		fs(G.backgroundColor);
 		fr(0, 0, CC.w, CC.h);
 
-		if (G.speed > 1.6 &&
+		var speedIncFactor = G.isMobile() ? 1.1 : 1.6;
+		if (G.speed >= speedIncFactor &&
 			utils.getRandomInt(0, 10) === 10
 		) {
 			G.showNoisyScreen();
@@ -2011,11 +2052,13 @@ Game.prototype = {
 		}
 	},
 	keyDown: function(e) {
-		// 32 is space
-		/*if (e.keyCode === 32 && !G.isInProgress) {
-			G.restart();
+		// 13 is enter
+		if ((e.keyCode === 13 || e.keyCode === 32) && G.menu) {
+			G.menu = null;
+            G.restart();
+            SU.play('playGame');
 			return;
-		}*/
+		}
 		if (!G.isInProgress) {
 			return;
 		}
