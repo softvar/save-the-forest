@@ -20,6 +20,9 @@ Screenshots
 <img src="screenshots/awesome-mobile.png"/>
 <img src="screenshots/night-mobile.png"/>
 
+<img src="screenshots/glitchy-game.png"/>
+
+<img src="screenshots/menu.png"/>
 <img src="screenshots/flying-in-daytime-air.png"/>
 <img src="screenshots/afternoon-destruction.png"/>
 <img src="screenshots/busted-in-night.png"/>
